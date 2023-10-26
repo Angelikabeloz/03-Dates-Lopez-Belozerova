@@ -25,41 +25,25 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 
 ------------------------------------------------------------------------
 
-After talking quite a bit about web data in the last session, today's session is dedicated to data collection - from the web!
+In this workshop, we'll introduce you to the Lubridate package, a useful tool to work with dates and times in R.
 
-What we will cover:
+Objectives of the session:
 
--   scraping static webpages
--   scraping multiple static webpages
--   API calls
--   building up and maintaining you own original sets of web-based data
+-   Understand the core components of lubridate.
 
-What we will not cover (today):
+-   To learn how to handle date and time data effectively.
 
--   scraping dynamic webpages
+-   To apply this knowledge to real-world data analysis and visualization tasks.
 
-# Why webscrape with R? `r emo::ji("globe")`
+# What is lubridate? `r emo::ji("timer")`
 
-Webscraping broadly includes a) getting (unstructured) data from the web and b) bringing it into shape (e.g. cleaning it, getting it into tabular format).
+Lubridate simplifies date and time data manipulation in R.
 
-Why webscrape?
-While some influential people consider "Data Scientist" `r emo::ji("woman_technologist")` to be the [sexiest job](https://hbr.org/2012/10/data-scientist-the-sexiest-job-of-the-21st-century) of the 21st century (congratulations!), one of the sexiest just emerging academic disciplines is (in my influential view) - Computational Social Science (CSS).
-Why is that so?
+It provides an intuitive and consistent interface for **creating, parsing, and performing operations on date-time objects.**
 
--   data abundance online
--   social interaction online
--   services track social behavior
+This package offers a set of standardized functions for analyze dates, performing arithmetic with date-time data, and extracting specific components of date and time formats (e.g., year, month, day).
 
-BUT online data are usually meant for display, not a (clean) download!
-
-But getting access to online data would also be incredibly interesting when you think of very pragmatic things like financial resources, time resources, reproducibility and updateability...
-
-Luckily, with `R` we can automate the whole pipeline of downloading, parsing and post-processing to make our projects easily reproducible.
-
-In general, remember, the basic **workflow for scraping static webpages** is the following.
-
-
-# Scraping static sites with `rvest` `r emo::ji("tractor")`
+# Scraping static sites with `rvest` `r emo::ji("10")`
 
 Who doesn't love Wikipedia?
 Let's use this as our first, straight forward test case.
@@ -67,23 +51,24 @@ Let's use this as our first, straight forward test case.
 **Step 1.** Load the packages `rvest` and `stringr`.
 
 ```{r, message=F}
-library(rvest)
-library(stringr)
-library(tidyverse)
+# install.packages("devtools")
+# devtools::install_github("hadley/emo")
+library(lubridate)
+library(emo)
+
 ```
 
 **Step 2.** Parse the page source.
 
 ```{r}
-parsed_url <- read_html("https://en.wikipedia.org/wiki/Cologne")
+my_duration <- dhours(2) + dminutes(30)
+
 ```
 
 **Step 3.** Extract information.
 
 ```{r}
-parsed_url |> 
-  html_element(xpath = '//p[(((count(preceding-sibling::*) + 1) = 170) and parent::*)]') |> 
-  html_text()
+ 
 ```
 
 There are two options:
@@ -120,8 +105,7 @@ Let's repeat step 2 and 3 with a more data-sciency example.
 **Step 2.** Parse the page source.
 
 ```{r}
-nypl_url <- "https://www.nypl.org/books-more/recommendations/best-books/adults?year=2021"
-nypl100 <- read_html(nypl_url)
+
 ```
 
 **Step 3.** Extract information.
@@ -141,17 +125,7 @@ play with that yourself if you like...
 Now let's have a look at the different ways to extract information:
 
 ```{r}
-title <- nypl100 |> 
-  html_elements(xpath = '//ul/li/div/div/h4') |> 
-  html_text2()
 
-author <- nypl100 |> 
-  html_elements(css = '.spbb-card__byline--grid') |> 
-  html_text2()
-
-summary <- nypl100 |> 
-  html_elements(xpath = '//*[contains(concat( " ", @class, " " ), concat( " ", "spbb-card__description--grid", " " ))]') |> 
-  html_text2()
 
 ```
 
@@ -163,7 +137,7 @@ However, in many cases, we need to clean the data we scraped with regular expres
 `r emo::ji("book")`
 
 ```{r}
-knitr::kable(data.frame(title, author, summary) |> head(3))
+ 
 ```
 
 ## Scraping HTML tables `r emo::ji("rocket")`
@@ -172,12 +146,7 @@ Oftentimes, we would like to scrape tabular data from the web.
 This is even easier in `rvest`!
 
 ```{r}
-url_p <- read_html("https://en.wikipedia.org/wiki/Germany")
-deu_table <- html_table(url_p, header = TRUE, fill = TRUE) |> 
-  pluck(4)
-deu_table |> 
-  select(State, Capital) |> 
-  head(5)
+ 
 ```
 
 # Scraping multiple pages `r emo::ji("robot")`
@@ -189,7 +158,7 @@ Let's say you are interested in how the journal was doing over the past years.
 Basically, follow steps to extract the Xpath information.
 
 ```{r, eval=F}
-browseURL("http://www.jstatsoft.org/issue/archive")
+ 
 ```
 
 **Step 2** Develop a scraping strategy.
@@ -198,57 +167,32 @@ Inspect the URLs of different sources and find the pattern.
 Then, construct the list of URLs from scratch.
 
 ```{r}
-baseurl <- "http://www.jstatsoft.org/article/view/v"
-volurl <- paste0("0", 1:99)
-volurl[1:9] <- paste0("00", 1:9)
-brurl <- paste0("0", 1:9)
-
-urls_list <- cross2(volurl, brurl) |> map_chr(~paste0(baseurl, .[[1]], 'i', .[[2]]))
-names <- cross2(volurl, brurl) |> map_chr(~paste0(.[[1]], '_', .[[2]], '.html'))
+ 
 ```
 
 **Step 3** Think about where you want your scraped material to be stored and create a directory.
 
 ```{r, eval=F}
-tempwd <- here::here("session-07-web-scraping/data/jstatsoftStats")
-dir.create(tempwd, recursive = TRUE)
-setwd(tempwd)
+ 
 ```
 
 **Step 4** Download the pages.
 Note that we did not do this step last time, when we were only scraping one page.
 
 ```{r, eval=F}
-folder <- paste0(tempwd, "/html_articles/")
-dir.create(folder)
-
-for (i in seq_along(urls_list)) {
-  # only update, don't replace
-  if (!file.exists(paste0(folder, names[i]))) {
-    # skip article when we run into an error
-    tryCatch(
-      download.file(urls_list[i], destfile = paste0(folder, names[i])),
-      error = function(e)
-        e
-    )
-    # don't kill their server --> be polite!
-    Sys.sleep(runif(1, 0, 1))
-  } 
-}
+ 
 ```
 
 While R is downloading the pages for you, you can watch it directly in the directory you defined...
 
 ```{r, fig.align='center', echo=F, out.width = "70%"}
-# knitr::include_graphics("pics/html_files.png")
+
 ```
 
 Check whether it worked.
 
 ```{r, eval=F}
-list_files <- list.files(folder, pattern = "0.*")
-list_files_path <- list.files(folder, pattern = "0.*", full.names = TRUE)
-length(list_files)
+ 
 ```
 
 Yay!
@@ -267,38 +211,7 @@ Remember, git is built to track changes in code, not in large data files.
 A loop is helpful here!
 
 ```{r, eval=F}
-# define output first
-authors <- character()
-title <- character()
-datePublish <- character()
 
-# then run the loop
-for (i in seq_along(list_files_path)) {
-  
-  html_out <- read_html(list_files_path[i])
-    
-  authors[i] <- html_out |> 
-    html_elements(xpath = '//*[contains(concat( " ", @class, " " ), concat( " ", "authors_long", " " ))]//strong') |> 
-    html_text2()
-    
-  title[i] <- html_out |> 
-    html_elements(xpath = '//*[contains(concat( " ", @class, " " ), concat( " ", "page-header", " " ))]') |> 
-    html_text2()
-    
-  datePublish[i] <- html_out |> 
-    html_elements(xpath = '//*[contains(concat( " ", @class, " " ), concat( " ", "article-meta", " " ))]//*[contains(concat( " ", @class, " " ), concat( " ", "row", " " )) and (((count(preceding-sibling::*) + 1) = 2) and parent::*)]//*[contains(concat( " ", @class, " " ), concat( " ", "col-sm-8", " " ))]') |> 
-    html_text2()
-  
-}
-
-# inspect data
-authors[1:3]
-title[1:3]
-datePublish[1:3]
-
-# create a data frame
-dat <- data.frame(authors = authors, title = title, datePublish = datePublish)
-dim(dat)
 ```
 
 **Step 6** Clean data...
@@ -358,15 +271,7 @@ Option 1: Get in touch with website administrators / data owners.
 Option 2: Use HTTP header fields From and User-Agent to provide information about yourself.
 
 ```         
-url <- "http://a-totally-random-website.com"
-
-rvest_session <- session(url, 
-  add_headers(`From` = "my@email.com", 
-              `UserAgent` = R.Version()$version.string))
-                
-scraped_text <- rvest_session |> 
-            html_elements(xpath = "p//a") |> 
-            html_text()
+ 
 ```
 
 rvest's `session()` creates a session object that responds to HTTP and HTML methods.
@@ -396,97 +301,7 @@ To get data from an API, we suggest to follow a workflow like this:
 Let's have a look at an example, the [Star Wars API](https://swapi.dev/):
 
 ```{r}
-baseurl <- "https://swapi.dev/api/"
-
-query <- 'films'
-
-GET(paste0(baseurl, query)) |>
-  content(as = 'text') |>
-  fromJSON() |> 
-  pluck(4) |> 
-  as.data.frame()
+ 
 ```
 
-```{r}
-query <- 'people/?search=skywalker'
 
-GET(paste0(baseurl, query)) |>
-  content(as = 'text') |>
-  fromJSON() |> 
-  pluck(4) |> 
-  as.data.frame()
-```
-
-If you do not know the source format, the `http_type` function will help you out!
-
-```{r}
-query <- 'starships/?search=death/?format=wookiee'
-
-GET(paste0(baseurl, query)) |>
-  http_type()
-```
-
-## API keys and authentication \`r # emo::ji('lock')\`\`
-
-For many APIs, you will need to obtain an api key to retrieve data.
-Once you received your api key (or token), you will also need to adapt your GET query.
-How you need to do this depends a lot on the API.
-The National Renewable Data Laboratory offers APIs for users to access energy data in a few categories (see [documentation](https://developer.nrel.gov/docs/)).
-The API is actually valid across a number of [US government institutions](https://api.data.gov/).
-We can sign up for an API key [here](https://api.data.gov/signup/).
-The API website, gives us detailed information on how to build our queries.
-But how do we actually authenticate ourselves with the API key?
-The [documentation](https://api.data.gov/docs/api-key/) tells us that there are multiple ways to go about this.
-We can either do adapt the use HTTP basic authentication, the GET query parameter, or the HTTP header.
-
-Here's a quick overview of how to implement these with `httr`:
-
-```{r, eval=FALSE}
-baseurl <- 'https://developer.nrel.gov/api/alt-fuel-stations/v1.json?limit=1&api_key='
-
-api_key <- '[YOUR API KEY GOES HERE]'
-
-# Get stations data in the US, remember to plug in your own API key
-get.afs <- GET(glue::glue("{baseurl}{api_key}"))
-
-# extract content from the query
-afs <- content(get.afs)
-
-# see what's available in the downloaded data
-names(afs)
-
-# how many stations in the downloaded data
-afs$total_results
-
-# how many stations per energy type
-fuel_list <- afs$station_counts$fuels
-
-# prepare data
-fuel_df <- fuel_list |> 
-  as_data_frame() |> 
-  mutate(across(everything(), unlist)) |> 
-  filter(row_number() == 1) |> 
-  pivot_longer(
-    cols = everything(), 
-    names_to = "fuel_type", 
-    values_to = "count"
-    ) |> 
-  mutate(fuel_type = fct_reorder(fuel_type, desc(count))) # reorder 
-
-# plot type of alternative fuel the station provides
-fuel_df |> 
-  ggplot(aes(x = fuel_type, y = count)) +
-  geom_col(fill="steelblue") + 
-  theme_minimal() 
-```
-
-Retrieving data from API's using `httr` can at times be quite tiresome.
-Luckily, there are many R libraries that make it much easier to retrieve data from APIs.
-Here is a [list of ready-made R bindings to web-APIs](https://ropensci.org/packages/data-access/).
-Actually, even the starwars API we queried earlier has its own R package, `rwars`!
-
-# Sources
-
-This tutorial drew heavily on Simon Munzert's book [Automated Data Collection with R](http://r-datacollection.com/) and related [course materials](https://github.com/simonmunzert/web-scraping-with-r-extended-edition).
-We also used an [example](https://keith-mcnulty.medium.com/how-to-scrape-the-web-in-r-d77b11fca40d) from Keith McNulty's blog post on tidy web scraping in R and another [example](https://library.virginia.edu/data/articles/using-data-gov-apis-in-r) from Yun Tai's article on using Data.gov APIs in R.
-For the regex part, we used examples from the string manipulation section in Hadley Wickham's [R for Data Science](https://r4ds.hadley.nz/strings) book.
