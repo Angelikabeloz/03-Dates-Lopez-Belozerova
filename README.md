@@ -1,4 +1,4 @@
-# Working with dplyr
+# Working with lubridate
 
 
 ## Summary
@@ -7,24 +7,24 @@ This repository provides materials for a session that is part of the [I2DS Tools
 
 ### Session contents
 
-This session will introduce you to the modern data wrangling workflow with R and dplyr. Data wrangling is one of the core steps in the data science workflow. dplyr is a grammar of data manipulation, providing a consistent set of verbs that help you solve the most common data manipulation challenges, including the manipulation of datasets and variables. 
+This session will introduce you to the modern data wrangling workflow with R and lubridate. Time and date data are fundamental in data analysis, and their proper management is crucial for drawing meaningful insights from data. In the R programming language, lubridate is a powerful package that simplifies time and date manipulation. 
 
 ### Main learning objectives
 
-The goals of this session are to (1) equip you with conceptual knowledge about the dplyr package and data wrangling workflow, (2) show you the three key verbs of the pacakge, and (3) provide you with practice material as well as some further readings.
+The primary objectives of this session are to (1) provide you with a conceptual understanding of the lubridate package and its capabilities in date-time manipulation, (2) introduce you to key lubridate functions, and (3) provide you with practice material as well as some further readings.
 
 
 ## Instructors
 
-- Simon Munzert ([website](http://simonmunzert.github.io/), [twitter](https://twitter.com/simonsaysnothin))
-- Kermit the Frog ([website](https://en.wikipedia.org/wiki/Kermit_the_Frog), [twitter](https://twitter.com/KermitTheFrog))
-
+- Monserrat López [(Twitter)](https://twitter.com/MonLopez_)
+- Anzhelika Belozerova
 
 ## Further resources
 
-- [dplyr overview at dplyr.tidyverse.org](https://dplyr.tidyverse.org/)
-- [Hands-on dplyr tutorial by Data School on YouTube](https://www.youtube.com/watch?v=jWjqLW-u3hc)
-- [R for Data Science book - part on data wrangling](https://r4ds.had.co.nz/wrangle-intro.html)
+- [Lubridate CheatSheet](https://lubridate.tidyverse.org)
+- [R for Data Science, Chapter 16: Dates and times](https://r4ds.had.co.nz/dates-and-times.html)
+- [Learn how to work with dates and times using the package ‘lubridate’](https://eddatascienceees.github.io/tutorial-sian-phillips/)
+- [Dates and times made easy with lubridate](https://lubridate.tidyverse.org/reference/lubridate-package.html#parsing-dates)
 
 
 ## License
@@ -33,6 +33,6 @@ The material in this repository is made available under the [MIT license](http:/
 
 ## Statement of contributions
 
-**Simon Munzert** prepared the practice material and post-processed the recording.
+**Monserrat López** prepared the presentation slides, recording and post-processed the recording.
 
-**Kermit the Frog** prepared the presentation slides and recording. He also provided an example to the practice material.
+**Anzhelika Belozerova** prepared the practice material and recording. 
