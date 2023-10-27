@@ -13,7 +13,7 @@
 
 <title>Dates and times with Lubridate</title>
 
-<script src="1-lubridate_files/header-attrs-2.21/header-attrs.js"></script>
+<script src="1-lubridate_files/header-attrs-2.24/header-attrs.js"></script>
 <script src="1-lubridate_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="1-lubridate_files/bootstrap-3.3.5/css/lumen.min.css" rel="stylesheet" />
@@ -29,7 +29,7 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
-<script src="1-lubridate_files/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<script src="1-lubridate_files/jqueryui-1.13.2/jquery-ui.min.js"></script>
 <link href="1-lubridate_files/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="1-lubridate_files/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="1-lubridate_files/navigation-1.1/tabsets.js"></script>
@@ -334,7 +334,8 @@ div.tocify {
 </div>
 
 
-<hr />
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
 <p>In this workshop, we’ll introduce you to the Lubridate package, a
 useful tool to work with dates and times in R.</p>
 <p>Objectives of the session:</p>
@@ -344,6 +345,7 @@ useful tool to work with dates and times in R.</p>
 <li><p>To apply this knowledge to real-world data analysis and
 visualization tasks.</p></li>
 </ul>
+</div>
 <div id="what-is-lubridate" class="section level1">
 <h1>What is lubridate? ⏳</h1>
 <p>Lubridate simplifies date and time data manipulation in R.</p>
@@ -354,211 +356,277 @@ objects.</strong></p>
 dates, performing arithmetic with date-time data, and extracting
 specific components of date and time formats (e.g., year, month,
 day).</p>
+<hr />
 </div>
-<div id="scraping-static-sites-with-rvest" class="section level1">
-<h1>Scraping static sites with <code>rvest</code> 🕥</h1>
-<p>Who doesn’t love Wikipedia? Let’s use this as our first, straight
-forward test case.</p>
-<p><strong>Step 1.</strong> Load the packages <code>rvest</code> and
-<code>stringr</code>.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co"># install.packages(&quot;devtools&quot;)</span></span>
-<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="co"># devtools::install_github(&quot;hadley/emo&quot;)</span></span>
-<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span>
-<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="fu">library</span>(emo)</span></code></pre></div>
-<p><strong>Step 2.</strong> Parse the page source.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>my_duration <span class="ot">&lt;-</span> <span class="fu">dhours</span>(<span class="dv">2</span>) <span class="sc">+</span> <span class="fu">dminutes</span>(<span class="dv">30</span>)</span></code></pre></div>
-<p><strong>Step 3.</strong> Extract information.</p>
-<p>There are two options:</p>
-<p><strong>Option 1.</strong> We saw how to do this before the Midterm
-brea. On your page of interest, go to a table that you’d like to scrape.
-Our favorite bowser for webscraping is Google Chrome but others work as
-well. On Chrome, you go in View &gt; Developer &gt; inspect elements. If
-you hover over the html code on the right, you should see boxes of
-different colors framing different elements of the page. Once the part
-of the page you would like to scrape is selected, right click on the
-html code and Copy &gt; Copy Xpath. That’s it.</p>
-<p><strong>Option 2.</strong> Something we did not show you, but that
-you might look at in your own time is the Chrome Extension
-<code>SelectorGadget</code>. You download the <a
-href="https://chrome.google.com/webstore/detail/selectorgadget/mhjhnkcfbdhnjickkkdbjoemdmbfginb?hl=de">Chrome
-Extension</a> <code>SelectorGadget</code> and activate it while browsing
-the page you’d like to scrape from. You will see a selection box moving
-with your cursor. You select an element by clickin on it. It turns green
-- and so does all other content that would be selected with the current
-XPath.</p>
-<p>You can now de-select everything that is irrelevant to you by
-clicking it again (it then turns red). Final step, then just click the
-XPath button at the bottom of the browser window. Make sure to use
-single quotation marks with this XPath!</p>
-<p>Let’s repeat step 2 and 3 with a more data-sciency example. 🎓</p>
-<p><strong>Step 2.</strong> Parse the page source.</p>
-<p><strong>Step 3.</strong> Extract information. When going through
-different levels of html, you can also use tidyverse logic.</p>
-<pre><code>body_nodes &lt;- nypl100 |&gt; 
- html_elements(&quot;body&quot;) |&gt; 
- html_children()
-
-body_nodes |&gt; 
- html_children()</code></pre>
-<p>play with that yourself if you like…</p>
-<p>Now let’s have a look at the different ways to extract
-information:</p>
-<p><strong>Step 4.</strong> Usually, step 4 is to clean extracted data.
-In this case, it actually is pretty clean already, thanks to
-<code>html_text2()</code>. However, in many cases, we need to clean the
-data we scraped with regular expressions.</p>
-<p><strong>Step 5.</strong> Put everything into a data frame. 📖</p>
-<div id="scraping-html-tables" class="section level2">
-<h2>Scraping HTML tables 🚀</h2>
-<p>Oftentimes, we would like to scrape tabular data from the web. This
-is even easier in <code>rvest</code>!</p>
+<div id="load-the-package-lubridate" class="section level1">
+<h1>Load the package lubridate ✅</h1>
+<p>The easiest way to get lubridate is to install the whole
+tidyverse:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co">#install.packages(&quot;tidyverse&quot;)</span></span></code></pre></div>
+<p>Alternatively, install just lubridate:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co">#install.packages(&quot;lubridate&quot;)</span></span></code></pre></div>
+<p>Or the the development version from GitHub:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># install.packages(&quot;devtools&quot;)</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="co">#devtools::install_github(&quot;tidyverse/lubridate&quot;)</span></span></code></pre></div>
+<div id="which-packages-will-we-use" class="section level2">
+<h2>Which packages will we use?</h2>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co">#library(emo)</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a><span class="fu">library</span>(lubridate)</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code></pre></div>
 </div>
 </div>
-<div id="scraping-multiple-pages" class="section level1">
-<h1>Scraping multiple pages 🤖</h1>
-<p>Whenever you want to really understand what’s going on within the
-functions of a new R package, it is very likely that there is a relevant
-article published in the <a
-href="https://www.jstatsoft.org/index">Journal of Statistical
-Software</a>. Let’s say you are interested in how the journal was doing
-over the past years.</p>
-<p><strong>Step 1.</strong> Inspect the source. Basically, follow steps
-to extract the Xpath information.</p>
-<p><strong>Step 2</strong> Develop a scraping strategy. We need a set of
-URLs leading to all sources. Inspect the URLs of different sources and
-find the pattern. Then, construct the list of URLs from scratch.</p>
-<p><strong>Step 3</strong> Think about where you want your scraped
-material to be stored and create a directory.</p>
-<p><strong>Step 4</strong> Download the pages. Note that we did not do
-this step last time, when we were only scraping one page.</p>
-<p>While R is downloading the pages for you, you can watch it directly
-in the directory you defined…</p>
-<p>Check whether it worked.</p>
-<p>Yay! Apparently, we scraped the html pages of 855 articles.</p>
-<div id="gitignoring-files" class="section level2">
-<h2>(Git)ignoring files 🙅</h2>
-<p>In case you scraping project is is linked to GitHub (as it will be in
-your assignment!), it can be useful to <strong>.gitignore</strong> the
-folder of downloaded files. This means that the folder can be stored in
-your local directory of the project but will not be synced with the
-remote (main) repository. Here is information on how to do this using <a
-href="https://carpentries-incubator.github.io/git-Rstudio-course/02-ignore/index.html">RStudio</a>.
-In Github Desktop it is very simple, you do your scraping work, the
-folder is created in your local repository and before your commit and
-push these changes, you go on <code>Repository</code> &gt;
-<code>Repository Settings</code> &gt; <code>Ignored Files</code> and
-edit the .gitignore file (add the name of the new folder / files you
-don’t want to sync). More generally, it makes sense to exclude .Rproj
-files, .RData files (and other binary or large data files), draft
-folders and sensitive information from version control. Remember, git is
-built to track changes in code, not in large data files.</p>
-<p><strong>Step 5</strong> Import files and parse out information. A
-loop is helpful here!</p>
-<p><strong>Step 6</strong> Clean data…</p>
-<p>You see, scraping data from multiple pages is no problem in R. Most
-of the brain work often goes into developing a scraping strategy and
-tidying the data, not into the actual downloading/scraping part.</p>
-<p>Scraping is also possible in much more complex scenarios! Watch out
-for workshop presentations on</p>
+<div id="creating-datetimes" class="section level1">
+<h1>Creating date/times 📆</h1>
+<p>There are three types of date/time data that refer to an instant in
+time:</p>
 <ul>
-<li>Text analytics with <code>quanteda</code></li>
-<li>Regular expressions with <code>stringr</code></li>
-<li>Data cleaning with <code>janitor</code></li>
+<li>A date. Tibbles print this as date.</li>
+<li>A time within a day. Tibbles print this as time.</li>
+<li>A date-time is a date plus a time: it uniquely identifies an instant
+in time (typically to the nearest second). Tibbles print this as
+dttm.</li>
 </ul>
-<p>and many more 🤩</p>
+<p>To get the current date or date-time you can use today() or
+now():</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">today</span>()</span></code></pre></div>
+<pre><code>## [1] &quot;2023-10-27&quot;</code></pre>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">now</span>()</span></code></pre></div>
+<pre><code>## [1] &quot;2023-10-27 01:52:26 CEST&quot;</code></pre>
+<p>The phrase “CEST” in the output represents the time-zone, this stands
+for Central European Summer Time. By default it should be “UTC”.</p>
+<p>*You can use the ‘OlsonNames()’ function to locate the continent or
+city you wish to use.</p>
+<p>You can determine either the ‘UTC’ time or the current time in
+another country.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">now</span>(<span class="at">tz =</span> <span class="st">&quot;UTC&quot;</span>)</span></code></pre></div>
+<pre><code>## [1] &quot;2023-10-26 23:52:26 UTC&quot;</code></pre>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="fu">now</span>(<span class="at">tz =</span> <span class="st">&quot;Asia/Bangkok&quot;</span>)</span></code></pre></div>
+<pre><code>## [1] &quot;2023-10-27 06:52:26 +07&quot;</code></pre>
+</div>
+<div id="parsing-dates-and-times" class="section level1">
+<h1>Parsing dates and times: 🔍</h1>
+<p>Using lubridate, we have the capability to parse dates by employing a
+combination of the letters ‘d’ (representing day), ‘m’ (representing
+month), and ‘y’ (representing year). We simply match the letters to the
+pattern of the date we are trying to parse.</p>
+<p>For example, let’s consider the date May 31, 2023. We can represent
+it either numerically without spaces or as a string using either ‘-’ or
+‘/’.”</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="co">#Let&#39;s see how it will appear when we begin with the year.</span></span>
+<span id="cb13-2"><a href="#cb13-2" tabindex="-1"></a><span class="fu">ymd</span>(<span class="dv">20230531</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" tabindex="-1"></a><span class="co">#Let&#39;s see how it will appear when we begin with the month.</span></span>
+<span id="cb13-5"><a href="#cb13-5" tabindex="-1"></a><span class="fu">mdy</span>(<span class="st">&quot;05-31-2023&quot;</span>)</span>
+<span id="cb13-6"><a href="#cb13-6" tabindex="-1"></a></span>
+<span id="cb13-7"><a href="#cb13-7" tabindex="-1"></a><span class="co">#Let&#39;s see how it will appear when we begin with the day.</span></span>
+<span id="cb13-8"><a href="#cb13-8" tabindex="-1"></a><span class="fu">dmy</span>(<span class="st">&quot;31/05/2023&quot;</span>)</span>
+<span id="cb13-9"><a href="#cb13-9" tabindex="-1"></a></span>
+<span id="cb13-10"><a href="#cb13-10" tabindex="-1"></a><span class="co">#Also, we can write our date like this</span></span>
+<span id="cb13-11"><a href="#cb13-11" tabindex="-1"></a><span class="fu">mdy</span>(<span class="st">&quot;May 31st, 2023&quot;</span>)</span>
+<span id="cb13-12"><a href="#cb13-12" tabindex="-1"></a><span class="fu">dmy</span>(<span class="st">&quot;31 of May 2023&quot;</span>)</span></code></pre></div>
+<p>ymd() and friends create dates. To create a date-time, add an
+underscore and one or more of “h”, “m”, and “s” to the name of the
+parsing function:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="fu">hms</span>(<span class="st">&quot;20:11:59&quot;</span>)</span></code></pre></div>
+<pre><code>## [1] &quot;20H 11M 59S&quot;</code></pre>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" tabindex="-1"></a><span class="fu">ymd_hms</span>(<span class="st">&quot;2023-05-31 20:11:59&quot;</span>)</span></code></pre></div>
+<pre><code>## [1] &quot;2023-05-31 20:11:59 UTC&quot;</code></pre>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="fu">mdy_hm</span>(<span class="st">&quot;05/31/2023 20:11&quot;</span>)</span></code></pre></div>
+<pre><code>## [1] &quot;2023-05-31 20:11:00 UTC&quot;</code></pre>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a><span class="fu">mdy_h</span>(<span class="st">&quot;05/31/2023 20&quot;</span>)</span></code></pre></div>
+<pre><code>## [1] &quot;2023-05-31 20:00:00 UTC&quot;</code></pre>
+<div id="components" class="section level2">
+<h2>Components: 🔮</h2>
+<p>If the date-time variable is successfully parsed as a date-time class
+then we can begin extracting components.</p>
+<p>Can you extract date, year, month, hour, minutes and seconds from the
+date May 31, 2023?</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a>datetime <span class="ot">&lt;-</span> <span class="fu">ymd_hms</span>(<span class="st">&quot;2023-05-31 20:11:59&quot;</span>)</span>
+<span id="cb22-2"><a href="#cb22-2" tabindex="-1"></a></span>
+<span id="cb22-3"><a href="#cb22-3" tabindex="-1"></a><span class="co"># Date extractions</span></span>
+<span id="cb22-4"><a href="#cb22-4" tabindex="-1"></a><span class="fu">date</span>(datetime)</span></code></pre></div>
+<pre><code>## [1] &quot;2023-05-31&quot;</code></pre>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a><span class="co">#year</span></span>
+<span id="cb24-2"><a href="#cb24-2" tabindex="-1"></a><span class="fu">year</span>(datetime)</span></code></pre></div>
+<pre><code>## [1] 2023</code></pre>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a><span class="co">#month</span></span>
+<span id="cb26-2"><a href="#cb26-2" tabindex="-1"></a><span class="fu">month</span>(datetime)</span></code></pre></div>
+<pre><code>## [1] 5</code></pre>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" tabindex="-1"></a><span class="co">#date</span></span>
+<span id="cb28-2"><a href="#cb28-2" tabindex="-1"></a><span class="fu">day</span>(datetime)</span></code></pre></div>
+<pre><code>## [1] 31</code></pre>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" tabindex="-1"></a><span class="co"># Time functions</span></span>
+<span id="cb30-2"><a href="#cb30-2" tabindex="-1"></a><span class="fu">hour</span>(datetime)</span></code></pre></div>
+<pre><code>## [1] 20</code></pre>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" tabindex="-1"></a><span class="co">#minute</span></span>
+<span id="cb32-2"><a href="#cb32-2" tabindex="-1"></a><span class="fu">minute</span>(datetime)</span></code></pre></div>
+<pre><code>## [1] 11</code></pre>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" tabindex="-1"></a><span class="co">#second</span></span>
+<span id="cb34-2"><a href="#cb34-2" tabindex="-1"></a><span class="fu">second</span>(datetime)</span></code></pre></div>
+<pre><code>## [1] 59</code></pre>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" tabindex="-1"></a><span class="co"># Some iteresting extractions</span></span>
+<span id="cb36-2"><a href="#cb36-2" tabindex="-1"></a><span class="fu">week</span>(datetime)</span></code></pre></div>
+<pre><code>## [1] 22</code></pre>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" tabindex="-1"></a><span class="co"># quarter</span></span>
+<span id="cb38-2"><a href="#cb38-2" tabindex="-1"></a><span class="fu">quarter</span>(datetime) <span class="co">#Quarters divide the year into fourths</span></span></code></pre></div>
+<pre><code>## [1] 2</code></pre>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" tabindex="-1"></a><span class="co"># semester</span></span>
+<span id="cb40-2"><a href="#cb40-2" tabindex="-1"></a><span class="fu">semester</span>(datetime) <span class="co">#Semesters divide the year into halfs</span></span></code></pre></div>
+<pre><code>## [1] 1</code></pre>
 </div>
 </div>
-<div id="good-scraping-practice" class="section level1">
-<h1>Good scraping practice</h1>
-<p>There is a set of general rules to the game:</p>
-<ol style="list-style-type: decimal">
-<li>You take all the <strong>responsibility</strong> for your web
-scraping work.</li>
-<li>Think about the nature of the data. Does it entail <strong>sensitive
-information</strong>? Do not collect personal data without explicit
-permission.</li>
-<li>Take all <strong>copyrights</strong> of a country’s jurisdiction
-into account. If you publish data, do not commit copyright fraud.</li>
-<li>If possible, <strong>stay identifiable</strong>. Stay polite. Stay
-friendly. Obey the scraping etiquette.</li>
-<li>If in doubt, <strong>ask the author/creator/provider</strong> of
-data for permission—if your interest is entirely scientific, chances
-aren’t bad that you get data.</li>
-</ol>
-<div id="how-do-i-know-the-scraping-etiquette-of-a-site"
-class="section level2">
-<h2>How do I know the scraping etiquette of a site? 🤝</h2>
-<p>Robot exclusion standards (<code>robot.txt</code>) are informal
-protocols to prohibit web robots from crawling content. They list
-documents that are allowed to crawl and which not. It is not a technical
-barrier but an ask for compliance. They are located in the root
-directory of a website (e.g
-<code>https://de.wikipedia.org/robots.txt</code>).</p>
-<p>For example, let’s have a look at wikipedia’s <a
-href="https://de.wikipedia.org/robots.txt">robot.txt</a> file, which is
-very human readable.</p>
-<p>General rules are listed under <code>User-agent: *</code> which is
-most interesting for R-based crawlers. A universal ban for a directory
-looks like this <code>Disallows: /</code>, sometimes Crawl-delays are
-suggested (in seconds) <code>Crawl-delay: 2</code>.</p>
-</div>
-<div id="what-is-polite-scraping" class="section level2">
-<h2>What is “polite” scraping? 🐌</h2>
-<p>First thing would be not to scrape at a speed that causes trouble for
-their server. Therefore, whenever you loop over a list of URLs, add a
-<code>Sys.sleep(runif(1, 1, 2))</code> at the end of the loop.</p>
-<p>And generally, it is better practice to store data on your local
-drive first (<code>download.file()</code>), then parse
-(<code>read_html()</code>).</p>
-<p><strong>A footnote on sustainability.</strong> In the digital
-context, we often forget that or actions do have physical consequences.
-For example, training AI, using blockchain and just streaming videos do
-cause considerable amounts of <span class="math inline">\(CO^2\)</span>
-emissions. So does bombarding a server with requests - certainly to a
-much lesser extent than the examples before - but please consider
-whether you have to re-run a large scraping project 100 times in order
-to debug things.</p>
-<p>Furthermore, downloading massive amounts of data may arouse attention
-from server administrators. Assuming that you’ve got nothing to hide,
-you should stay identifiable beyond your IP address.</p>
-</div>
-<div id="how-can-i-stay-identifyable" class="section level2">
-<h2>How can I stay identifyable? 👤</h2>
-<p>Option 1: Get in touch with website administrators / data owners.</p>
-<p>Option 2: Use HTTP header fields From and User-Agent to provide
-information about yourself.</p>
-<pre><code> </code></pre>
-<p>rvest’s <code>session()</code> creates a session object that responds
-to HTTP and HTML methods. Here, we provide our email address and the
-current R version as User-Agent information. This will pop up in the
-server logs: The webpage administrator has the chance to easily get in
-touch with you.</p>
-</div>
-</div>
-<div id="on-an-api-far-far-away" class="section level1">
-<h1>On an API far, far away… ⭐</h1>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">library</span>(httr)</span>
-<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a><span class="fu">library</span>(jsonlite)</span>
-<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a><span class="fu">library</span>(xml2)</span></code></pre></div>
-<p>To get data from an API, we suggest to follow a workflow like
-this:</p>
-<ol style="list-style-type: decimal">
-<li>Read the APIs documentation!</li>
-<li>Get the baseurl</li>
-<li>Find out the parameters referring to the resources of interest to
-you</li>
-<li>Create a query url from the base url and the query parameters</li>
-<li>Run the <code>GET</code> function on the query url</li>
-<li>Depending on the encoding (usually, it’s json), you will need
-to:</li>
-</ol>
+<div id="ted-talks" class="section level1">
+<h1>TED Talks 🔉</h1>
+<p>These datasets contain information about all audio-video recordings
+of TED Talks uploaded to the official TED.com website until September
+21st, 2017.</p>
+<p>Features Available:</p>
 <ul>
-<li>Parse the result with the <code>content</code> function</li>
-<li>Either use <code>jsonlite</code> or <code>xml2</code> to parse the
-json or xml files</li>
+<li>name: The official name of the TED Talk. Includes the title and the
+speaker.</li>
+<li>title: The title of the talk</li>
+<li>description: A blurb of what the talk is about.</li>
+<li>main_speaker: The first named speaker of the talk.</li>
+<li>speaker_occupation: The occupation of the main speaker.</li>
+<li>num_speaker: The number of speakers in the talk.</li>
+<li>duration: The duration of the talk in seconds.</li>
+<li>event: The TED/TEDx event where the talk took place.</li>
+<li>film_date: The Unix timestamp of the filming.</li>
+<li>published_date: The Unix timestamp for the publication of the talk
+on TED.com</li>
+<li>comments: The number of first level comments made on the talk.</li>
+<li>tags: The themes associated with the talk.</li>
+<li>languages: The number of languages in which the talk is
+available.</li>
+<li>ratings: A stringified dictionary of the various ratings given to
+the talk (inspiring, fascinating, jaw dropping, etc.)</li>
+<li>related_talks: A list of dictionaries of recommended talks to watch
+next.</li>
+<li>url: The URL of the talk.</li>
+<li>views: The number of views on the talk.</li>
 </ul>
-<p>Let’s have a look at an example, the <a
-href="https://swapi.dev/">Star Wars API</a>:</p>
+<p>More about dataset:<a
+href="https://www.kaggle.com/datasets/rounakbanik/ted-talks/data"
+class="uri">https://www.kaggle.com/datasets/rounakbanik/ted-talks/data</a></p>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" tabindex="-1"></a>ted <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;ted_main.csv&quot;</span>)</span>
+<span id="cb42-2"><a href="#cb42-2" tabindex="-1"></a><span class="fu">colnames</span>(ted)</span></code></pre></div>
+<pre><code>##  [1] &quot;comments&quot;           &quot;description&quot;        &quot;duration&quot;          
+##  [4] &quot;event&quot;              &quot;film_date&quot;          &quot;languages&quot;         
+##  [7] &quot;main_speaker&quot;       &quot;name&quot;               &quot;num_speaker&quot;       
+## [10] &quot;published_date&quot;     &quot;ratings&quot;            &quot;related_talks&quot;     
+## [13] &quot;speaker_occupation&quot; &quot;tags&quot;               &quot;title&quot;             
+## [16] &quot;url&quot;                &quot;views&quot;</code></pre>
+<p>There are three columns containing dates and times: “film_date”,
+“published_date”, “duration”. Let’s see how they look like:</p>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" tabindex="-1"></a>ted_select <span class="ot">&lt;-</span> ted <span class="sc">|&gt;</span> </span>
+<span id="cb44-2"><a href="#cb44-2" tabindex="-1"></a>  <span class="fu">select</span>(film_date, published_date, duration) <span class="sc">|&gt;</span> </span>
+<span id="cb44-3"><a href="#cb44-3" tabindex="-1"></a>  <span class="fu">head</span>()</span>
+<span id="cb44-4"><a href="#cb44-4" tabindex="-1"></a>ted_select</span></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["film_date"],"name":[1],"type":["int"],"align":["right"]},{"label":["published_date"],"name":[2],"type":["int"],"align":["right"]},{"label":["duration"],"name":[3],"type":["int"],"align":["right"]}],"data":[{"1":"1140825600","2":"1151367060","3":"1164","_rn_":"1"},{"1":"1140825600","2":"1151367060","3":"977","_rn_":"2"},{"1":"1140739200","2":"1151367060","3":"1286","_rn_":"3"},{"1":"1140912000","2":"1151367060","3":"1116","_rn_":"4"},{"1":"1140566400","2":"1151440680","3":"1190","_rn_":"5"},{"1":"1138838400","2":"1151440680","3":"1305","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>The date “1140825600” (or “1151367060”, “1164”) appears to be a
+timestamp. In many programming languages and systems, timestamps are
+typically measured in seconds or milliseconds since a reference point in
+time, often referred to as the “Unix epoch.”</p>
+<p>We can convert this Unix timestamp to a date using the “as_datetime”,
+“as.duration” function:</p>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" tabindex="-1"></a>ted<span class="sc">$</span>published_date <span class="ot">&lt;-</span> <span class="fu">as_datetime</span>(ted<span class="sc">$</span>published_date)</span>
+<span id="cb45-2"><a href="#cb45-2" tabindex="-1"></a>ted<span class="sc">$</span>film_date <span class="ot">&lt;-</span> <span class="fu">as_datetime</span>(ted<span class="sc">$</span>film_date)</span>
+<span id="cb45-3"><a href="#cb45-3" tabindex="-1"></a>ted<span class="sc">$</span>duration <span class="ot">&lt;-</span> <span class="fu">as.duration</span>(ted<span class="sc">$</span>duration)</span>
+<span id="cb45-4"><a href="#cb45-4" tabindex="-1"></a>ted_selected <span class="ot">&lt;-</span> ted <span class="sc">|&gt;</span> </span>
+<span id="cb45-5"><a href="#cb45-5" tabindex="-1"></a>  <span class="fu">select</span>(film_date, published_date, duration) <span class="sc">|&gt;</span> </span>
+<span id="cb45-6"><a href="#cb45-6" tabindex="-1"></a>  <span class="fu">head</span>()</span>
+<span id="cb45-7"><a href="#cb45-7" tabindex="-1"></a>ted_selected</span></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["film_date"],"name":[1],"type":["dttm"],"align":["right"]},{"label":["published_date"],"name":[2],"type":["dttm"],"align":["right"]},{"label":["duration"],"name":[3],"type":["Duration"],"align":["right"]}],"data":[{"1":"2006-02-25","2":"2006-06-27 00:11:00","3":"1164s (~19.4 minutes)","_rn_":"1"},{"1":"2006-02-25","2":"2006-06-27 00:11:00","3":"977s (~16.28 minutes)","_rn_":"2"},{"1":"2006-02-24","2":"2006-06-27 00:11:00","3":"1286s (~21.43 minutes)","_rn_":"3"},{"1":"2006-02-26","2":"2006-06-27 00:11:00","3":"1116s (~18.6 minutes)","_rn_":"4"},{"1":"2006-02-22","2":"2006-06-27 20:38:00","3":"1190s (~19.83 minutes)","_rn_":"5"},{"1":"2006-02-02","2":"2006-06-27 20:38:00","3":"1305s (~21.75 minutes)","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>Does the duration of the TED talk video affect the number of
+views?</p>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" tabindex="-1"></a><span class="co">#Most views</span></span>
+<span id="cb46-2"><a href="#cb46-2" tabindex="-1"></a>ted_compare_v <span class="ot">&lt;-</span> ted <span class="sc">|&gt;</span></span>
+<span id="cb46-3"><a href="#cb46-3" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(views)) <span class="sc">|&gt;</span></span>
+<span id="cb46-4"><a href="#cb46-4" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">5</span>) <span class="sc">|&gt;</span></span>
+<span id="cb46-5"><a href="#cb46-5" tabindex="-1"></a>  <span class="fu">select</span>(duration, views)</span>
+<span id="cb46-6"><a href="#cb46-6" tabindex="-1"></a>ted_compare_v</span></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["duration"],"name":[1],"type":["Duration"],"align":["right"]},{"label":["views"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"1164s (~19.4 minutes)","2":"47227110","_rn_":"1"},{"1":"1262s (~21.03 minutes)","2":"43155405","_rn_":"2"},{"1":"1084s (~18.07 minutes)","2":"34309432","_rn_":"3"},{"1":"1219s (~20.32 minutes)","2":"31168150","_rn_":"4"},{"1":"1003s (~16.72 minutes)","2":"22270883","_rn_":"5"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" tabindex="-1"></a><span class="co">#Least views</span></span>
+<span id="cb47-2"><a href="#cb47-2" tabindex="-1"></a>ted_compare_views <span class="ot">&lt;-</span> ted <span class="sc">|&gt;</span></span>
+<span id="cb47-3"><a href="#cb47-3" tabindex="-1"></a>  <span class="fu">arrange</span>(views) <span class="sc">|&gt;</span></span>
+<span id="cb47-4"><a href="#cb47-4" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">5</span>) <span class="sc">|&gt;</span></span>
+<span id="cb47-5"><a href="#cb47-5" tabindex="-1"></a>  <span class="fu">select</span>(duration, views)</span>
+<span id="cb47-6"><a href="#cb47-6" tabindex="-1"></a>ted_compare_views</span></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["duration"],"name":[1],"type":["Duration"],"align":["right"]},{"label":["views"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"3573s (~59.55 minutes)","2":"50443","_rn_":"1"},{"1":"816s (~13.6 minutes)","2":"66668","_rn_":"2"},{"1":"386s (~6.43 minutes)","2":"82488","_rn_":"3"},{"1":"1690s (~28.17 minutes)","2":"112321","_rn_":"4"},{"1":"594s (~9.9 minutes)","2":"115346","_rn_":"5"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>Does the hour when the video was posted affect the views?</p>
+<p>Extract hour from the published_date and compare with views:</p>
+<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" tabindex="-1"></a><span class="co">#Most views</span></span>
+<span id="cb48-2"><a href="#cb48-2" tabindex="-1"></a>ted_compare_h <span class="ot">&lt;-</span> ted <span class="sc">|&gt;</span></span>
+<span id="cb48-3"><a href="#cb48-3" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">hour_publ =</span> <span class="fu">hour</span>(published_date)) <span class="sc">|&gt;</span></span>
+<span id="cb48-4"><a href="#cb48-4" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(views)) <span class="sc">|&gt;</span></span>
+<span id="cb48-5"><a href="#cb48-5" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">5</span>) <span class="sc">|&gt;</span></span>
+<span id="cb48-6"><a href="#cb48-6" tabindex="-1"></a>  <span class="fu">select</span>(hour_publ, views)</span>
+<span id="cb48-7"><a href="#cb48-7" tabindex="-1"></a>ted_compare_h</span></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["hour_publ"],"name":[1],"type":["int"],"align":["right"]},{"label":["views"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"0","2":"47227110","_rn_":"1"},{"1":"15","2":"43155405","_rn_":"2"},{"1":"9","2":"34309432","_rn_":"3"},{"1":"14","2":"31168150","_rn_":"4"},{"1":"1","2":"22270883","_rn_":"5"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" tabindex="-1"></a><span class="co">#Least views</span></span>
+<span id="cb49-2"><a href="#cb49-2" tabindex="-1"></a>ted_compare_hour <span class="ot">&lt;-</span> ted <span class="sc">|&gt;</span></span>
+<span id="cb49-3"><a href="#cb49-3" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">hour_publ =</span> <span class="fu">hour</span>(published_date)) <span class="sc">|&gt;</span></span>
+<span id="cb49-4"><a href="#cb49-4" tabindex="-1"></a>  <span class="fu">arrange</span>(views) <span class="sc">|&gt;</span></span>
+<span id="cb49-5"><a href="#cb49-5" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">5</span>) <span class="sc">|&gt;</span></span>
+<span id="cb49-6"><a href="#cb49-6" tabindex="-1"></a>  <span class="fu">select</span>(hour_publ, views)</span>
+<span id="cb49-7"><a href="#cb49-7" tabindex="-1"></a>ted_compare_hour</span></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["hour_publ"],"name":[1],"type":["int"],"align":["right"]},{"label":["views"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"15","2":"50443","_rn_":"1"},{"1":"15","2":"66668","_rn_":"2"},{"1":"1","2":"82488","_rn_":"3"},{"1":"8","2":"112321","_rn_":"4"},{"1":"15","2":"115346","_rn_":"5"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>Does the year affect the number of comments?</p>
+<p>Extract year from the published_date and compare with comments:</p>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" tabindex="-1"></a><span class="co">#Most comments</span></span>
+<span id="cb50-2"><a href="#cb50-2" tabindex="-1"></a>ted_compare_y <span class="ot">&lt;-</span> ted <span class="sc">|&gt;</span></span>
+<span id="cb50-3"><a href="#cb50-3" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">year_publ =</span> <span class="fu">year</span>(published_date)) <span class="sc">|&gt;</span></span>
+<span id="cb50-4"><a href="#cb50-4" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(comments)) <span class="sc">|&gt;</span></span>
+<span id="cb50-5"><a href="#cb50-5" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">5</span>) <span class="sc">|&gt;</span></span>
+<span id="cb50-6"><a href="#cb50-6" tabindex="-1"></a>  <span class="fu">select</span>(year_publ, comments)</span>
+<span id="cb50-7"><a href="#cb50-7" tabindex="-1"></a>ted_compare_y</span></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["year_publ"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["comments"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"2007","2":"6404","_rn_":"1"},{"1":"2006","2":"4553","_rn_":"2"},{"1":"2010","2":"3356","_rn_":"3"},{"1":"2008","2":"2877","_rn_":"4"},{"1":"2014","2":"2673","_rn_":"5"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" tabindex="-1"></a><span class="co">#Least comments</span></span>
+<span id="cb51-2"><a href="#cb51-2" tabindex="-1"></a>ted_compare_year <span class="ot">&lt;-</span> ted <span class="sc">|&gt;</span></span>
+<span id="cb51-3"><a href="#cb51-3" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">year_publ =</span> <span class="fu">year</span>(published_date)) <span class="sc">|&gt;</span></span>
+<span id="cb51-4"><a href="#cb51-4" tabindex="-1"></a>  <span class="fu">arrange</span>(comments) <span class="sc">|&gt;</span></span>
+<span id="cb51-5"><a href="#cb51-5" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">5</span>) <span class="sc">|&gt;</span></span>
+<span id="cb51-6"><a href="#cb51-6" tabindex="-1"></a>  <span class="fu">select</span>(year_publ, comments)</span>
+<span id="cb51-7"><a href="#cb51-7" tabindex="-1"></a>ted_compare_year</span></code></pre></div>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["year_publ"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["comments"],"name":[2],"type":["int"],"align":["right"]}],"data":[{"1":"2017","2":"2","_rn_":"1"},{"1":"2017","2":"3","_rn_":"2"},{"1":"2017","2":"3","_rn_":"3"},{"1":"2017","2":"3","_rn_":"4"},{"1":"2017","2":"5","_rn_":"5"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> ted, <span class="fu">aes</span>(<span class="at">x =</span> published_date, <span class="at">y =</span> comments)) <span class="sc">+</span></span>
+<span id="cb52-2"><a href="#cb52-2" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb52-3"><a href="#cb52-3" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Date of Publication&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Comments&quot;</span>) <span class="sc">+</span></span>
+<span id="cb52-4"><a href="#cb52-4" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">&quot;Comments vs. Date of Publication&quot;</span>)</span></code></pre></div>
+<p><img src="1-lubridate_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
 </div>
 
 &nbsp;
