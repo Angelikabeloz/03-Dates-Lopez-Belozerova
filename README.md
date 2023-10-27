@@ -16,7 +16,7 @@ The primary objectives of this session are to (1) provide you with a conceptual 
 
 ## Instructors
 
-- Monserrat López [twitter](https://twitter.com/MonLopez_)
+- Monserrat López [(Twitter)](https://twitter.com/MonLopez_)
 - Anzhelika Belozerova
 
 ## Further resources
