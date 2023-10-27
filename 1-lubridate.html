@@ -13,7 +13,7 @@
 
 <title>Dates and times with Lubridate</title>
 
-<script src="1-lubridate_files/header-attrs-2.24/header-attrs.js"></script>
+<script src="1-lubridate_files/header-attrs-2.21/header-attrs.js"></script>
 <script src="1-lubridate_files/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="1-lubridate_files/bootstrap-3.3.5/css/lumen.min.css" rel="stylesheet" />
@@ -29,7 +29,7 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
-<script src="1-lubridate_files/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<script src="1-lubridate_files/jqueryui-1.11.4/jquery-ui.min.js"></script>
 <link href="1-lubridate_files/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="1-lubridate_files/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="1-lubridate_files/navigation-1.1/tabsets.js"></script>
@@ -347,7 +347,7 @@ visualization tasks.</p></li>
 </ul>
 </div>
 <div id="what-is-lubridate" class="section level1">
-<h1>What is lubridate? ⏳</h1>
+<h1>What is lubridate? ⌛</h1>
 <p>Lubridate simplifies date and time data manipulation in R.</p>
 <p>It provides an intuitive and consistent interface for
 <strong>creating, parsing, and performing operations on date-time
@@ -359,7 +359,7 @@ day).</p>
 <hr />
 </div>
 <div id="load-the-package-lubridate" class="section level1">
-<h1>Load the package lubridate ✅</h1>
+<h1>Load the package lubridate 🔖</h1>
 <p>The easiest way to get lubridate is to install the whole
 tidyverse:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co">#install.packages(&quot;tidyverse&quot;)</span></span></code></pre></div>
@@ -392,7 +392,7 @@ now():</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="fu">today</span>()</span></code></pre></div>
 <pre><code>## [1] &quot;2023-10-27&quot;</code></pre>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">now</span>()</span></code></pre></div>
-<pre><code>## [1] &quot;2023-10-27 01:52:26 CEST&quot;</code></pre>
+<pre><code>## [1] &quot;2023-10-27 16:41:50 CEST&quot;</code></pre>
 <p>The phrase “CEST” in the output represents the time-zone, this stands
 for Central European Summer Time. By default it should be “UTC”.</p>
 <p>*You can use the ‘OlsonNames()’ function to locate the continent or
@@ -400,9 +400,9 @@ city you wish to use.</p>
 <p>You can determine either the ‘UTC’ time or the current time in
 another country.</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">now</span>(<span class="at">tz =</span> <span class="st">&quot;UTC&quot;</span>)</span></code></pre></div>
-<pre><code>## [1] &quot;2023-10-26 23:52:26 UTC&quot;</code></pre>
+<pre><code>## [1] &quot;2023-10-27 14:41:50 UTC&quot;</code></pre>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="fu">now</span>(<span class="at">tz =</span> <span class="st">&quot;Asia/Bangkok&quot;</span>)</span></code></pre></div>
-<pre><code>## [1] &quot;2023-10-27 06:52:26 +07&quot;</code></pre>
+<pre><code>## [1] &quot;2023-10-27 21:41:50 +07&quot;</code></pre>
 </div>
 <div id="parsing-dates-and-times" class="section level1">
 <h1>Parsing dates and times: 🔍</h1>
@@ -631,7 +631,7 @@ views?</p>
 
 &nbsp;
 <hr />
-<p style="text-align: center;">A work by Monserrat López and . Template of Lisa Oswald & Tom Arend.</a></p>
+<p style="text-align: center;">A work by Monserrat López and Anzhelika Belozerova. Template of Lisa Oswald & Tom Arend.</a></p>
 <p style="text-align: center;"><span style="color: #808080;"><em>I2DS Tools for Data Science Workshop by Simon Munzert</em></span></p>
 <p style="text-align: center;"><span style="color: #808080;"><em><a href="https://www.hertie-school.org/en/">Hertie School, Berlin</em></span></p>
 
